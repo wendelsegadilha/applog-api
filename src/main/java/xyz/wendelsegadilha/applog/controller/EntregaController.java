@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
+import xyz.wendelsegadilha.applog.api.model.DestinatarioModel;
+import xyz.wendelsegadilha.applog.api.model.EntregaModel;
 import xyz.wendelsegadilha.applog.domain.model.Cliente;
 import xyz.wendelsegadilha.applog.domain.model.Entrega;
 import xyz.wendelsegadilha.applog.domain.repository.EntregaRepository;
@@ -47,9 +49,25 @@ public class EntregaController {
 	}
 	
 	@GetMapping("/{entregaId}")
-	public ResponseEntity<Entrega> buscar(@PathVariable Long entregaId) {
+	public ResponseEntity<EntregaModel> buscar(@PathVariable Long entregaId) {
 		return entregaRepository.findById(entregaId)
-				.map(ResponseEntity::ok)
+				.map(entrega -> {
+					EntregaModel entregaModel = new EntregaModel();
+					entregaModel.setId(entrega.getId());
+					entregaModel.setNomeCliente(entrega.getCliente().getNome());
+					entregaModel.setDestinatario(new DestinatarioModel());
+					DestinatarioModel destinatario = entregaModel.getDestinatario();
+					destinatario.setNome(entrega.getDestinatario().getNome());
+					destinatario.setLogradouro(entrega.getDestinatario().getLogradouro());
+					destinatario.setNumero(entrega.getDestinatario().getNumero());
+					destinatario.setComplemento(entrega.getDestinatario().getComplemento());
+					destinatario.setBairro(entrega.getDestinatario().getBairro());
+					entregaModel.setTaxa(entrega.getTaxa());
+					entregaModel.setStatus(entrega.getStatus());
+					entregaModel.setDataPedido(entrega.getDataPedido());
+					entregaModel.setDataFinalizacao(entrega.getDataFinalizacao());
+					return ResponseEntity.ok(entregaModel);
+				})
 				.orElse(ResponseEntity.notFound().build());
 	}
 
