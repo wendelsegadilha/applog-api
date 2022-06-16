@@ -1,4 +1,4 @@
-package xyz.wendelsegadilha.applog.controller;
+package xyz.wendelsegadilha.applog.api.controller;
 
 import java.util.List;
 
