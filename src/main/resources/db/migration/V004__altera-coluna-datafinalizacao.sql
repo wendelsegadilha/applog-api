@@ -1,0 +1,1 @@
+ALTER TABLE entrega MODIFY data_finalizacao datetime;
