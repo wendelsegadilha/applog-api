@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import lombok.AllArgsConstructor;
+import xyz.wendelsegadilha.applog.domain.exception.EntidadeNaoEncontradaException;
 import xyz.wendelsegadilha.applog.domain.exception.NegocioException;
 
 @AllArgsConstructor
@@ -59,6 +60,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		problema.setTitulo("Um ou mais campos estão inválidos. Faça o preencimento correto e tente novamente.");
 		problema.setCampos(campos);
 		return handleExceptionInternal(ex, problema, headers, status, request);
+	}
+	
+	@ExceptionHandler(EntidadeNaoEncontradaException.class)
+	public ResponseEntity<Object> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		Problema problema = new Problema();
+		problema.setStatus(status.value());
+		problema.setDataHora(LocalDateTime.now());
+		problema.setTitulo(ex.getMessage());
+		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request); 
 	}
 	
 	@ExceptionHandler(NegocioException.class)
