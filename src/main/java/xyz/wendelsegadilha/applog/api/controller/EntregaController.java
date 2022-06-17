@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,6 +21,7 @@ import xyz.wendelsegadilha.applog.api.model.EntregaModel;
 import xyz.wendelsegadilha.applog.api.model.input.EntregaInput;
 import xyz.wendelsegadilha.applog.domain.model.Entrega;
 import xyz.wendelsegadilha.applog.domain.repository.EntregaRepository;
+import xyz.wendelsegadilha.applog.domain.service.FinalizacaoEntregaService;
 import xyz.wendelsegadilha.applog.domain.service.SolicitacaoEntregaService;
 
 @AllArgsConstructor
@@ -30,6 +32,7 @@ public class EntregaController {
 	private SolicitacaoEntregaService solicitacaoEntregaService;
 	private EntregaRepository entregaRepository;
 	private EntregaAssembler entregaAssembler;
+	private FinalizacaoEntregaService finalizacaoEntregaService;
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -52,6 +55,12 @@ public class EntregaController {
 					return ResponseEntity.ok(entregaAssembler.toModel(entrega));
 				})
 				.orElse(ResponseEntity.notFound().build());
+	}
+	
+	@PutMapping("/{entregaId}/finalizacao")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void finalizar(@PathVariable Long entregaId) {
+		finalizacaoEntregaService.finalizar(entregaId);
 	}
 
 }
